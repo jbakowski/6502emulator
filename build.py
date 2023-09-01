@@ -20,13 +20,17 @@ if(args.clean):
                 shutil.rmtree(entry.path)
             else:
                 os.remove(entry.path)
+    os.chdir("..")
 
 if(args.gcc):
     os.chdir(BUILD_PATH)
     os.system('cmake .. -G "Visual Studio 17 2022"')
     os.system('MSBuild.exe 6502emulator.sln')
+    os.chdir("..")
 
 if(args.run):
+    os.chdir(BUILD_PATH)
     os.chdir("./Debug")
-    print("#####\n\n\n")
+    if(args.gcc):
+        print("#####\n\n\n")
     os.system('main.exe')
