@@ -2,7 +2,7 @@
 
 void CPU::Reset(Memory &Memory) {
     // read address from POWER_ON_RESET
-    // jump to POWER_ON_RESET
+    // jump to the address
     // activate the routine
 };
 
