@@ -62,8 +62,12 @@ uint8_t CPU::Fetch(Memory& Memory, Clock& Clock) {
 }
 
 void CPU::Store(Memory& Memory, Clock& Clock, uint8_t Data) {
+    DEBUG_STDOUT("Register.PC: " << Register.PC << std::endl);
+    DEBUG_STDOUT("Data to be saved: " << Data << std::endl);
     Memory.Data[Register.PC] = Data;
+    DEBUG_STDOUT("Memory.Data[Register.PC]: " << Memory.Data[Register.PC] << std::endl);
     Register.PC++;
+    DEBUG_STDOUT("Register.PC: " << Register.PC << std::endl);
     Clock.Tick(FETCH_BYTE_CYCLE);
 }
 
@@ -128,28 +132,66 @@ void CPU::InstructionCycle(Memory& Memory, Clock& Clock) {
             Clock.Tick(1);
             break;
         case TAX_IMPLIED:
+            DEBUG_STDOUT("Register.IRX: " << Register.IRX << std::endl);
+            DEBUG_STDOUT("Register.ACC: " << Register.ACC << std::endl);
             Register.IRX = Register.ACC;
+            DEBUG_STDOUT("Register.IRX (new): " << Register.IRX << std::endl);
             SetZeroFlag(Status, Register.IRX);
+            DEBUG_STDOUT("Status.Z: " << Status.Z << std::endl);
             SetNegativeFlag(Status, Register.IRX);
+            DEBUG_STDOUT("Status.N: " << Status.N << std::endl);
             Clock.Tick(2);
+            break;
         case TAY_IMPLIED:
+            DEBUG_STDOUT("Register.IRY: " << Register.IRY << std::endl);
+            DEBUG_STDOUT("Register.ACC: " << Register.ACC << std::endl);
             Register.IRY = Register.ACC;
+            DEBUG_STDOUT("Register.IRY (new): " << Register.IRY << std::endl);
             SetZeroFlag(Status, Register.IRY);
+            DEBUG_STDOUT("Status.Z: " << Status.Z << std::endl);
             SetNegativeFlag(Status, Register.IRY);
+            DEBUG_STDOUT("Status.N: " << Status.N << std::endl);
             Clock.Tick(2);
         case TXA_IMPLIED:
+            DEBUG_STDOUT("Register.ACC: " << Register.ACC << std::endl);
+            DEBUG_STDOUT("Register.IRX: " << Register.IRX << std::endl);
             Register.ACC = Register.IRX;
+            DEBUG_STDOUT("Register.ACC (new): " << Register.ACC << std::endl);
             SetZeroFlag(Status, Register.ACC);
             SetNegativeFlag(Status, Register.ACC);
             Clock.Tick(2);
+            break;
         case TYA_IMPLIED:
+            DEBUG_STDOUT("Register.ACC: " << Register.ACC << std::endl);
+            DEBUG_STDOUT("Register.IRY: " << Register.IRY << std::endl);
             Register.ACC = Register.IRY;
+            DEBUG_STDOUT("Register.ACC (new): " << Register.ACC << std::endl);
             SetZeroFlag(Status, Register.ACC);
+            DEBUG_STDOUT("Status.Z: " << Status.Z << std::endl);
             SetNegativeFlag(Status, Register.ACC);
+            DEBUG_STDOUT("Status.N: " << Status.N << std::endl);
             Clock.Tick(2);
+            break;
         case TSX_IMPLIED:
+            DEBUG_STDOUT("Register.IRX: " << Register.IRX << std::endl);
+            DEBUG_STDOUT("Register.SP: " << Register.SP << std::endl);
             Register.IRX = Register.SP;
-
+            DEBUG_STDOUT("Register.SP (new): " << Register.SP << std::endl);
+            SetZeroFlag(Status, Register.IRX);
+            DEBUG_STDOUT("Status.Z: " << Status.Z << std::endl);
+            SetNegativeFlag(Status, Register.IRX);
+            DEBUG_STDOUT("Status.N: " << Status.N << std::endl);
+            Clock.Tick(2);
+            break;
+        case TXS_IMPLIED:
+            DEBUG_STDOUT("Register.SP: " << Register.SP << std::endl);
+            DEBUG_STDOUT("Register.IRX: " << Register.IRX << std::endl);
+            Register.SP = Register.IRX;
+            DEBUG_STDOUT("Register.SP (new): " << Register.SP << std::endl);
+            Clock.Tick(2);
+            break;
+        case PHA_IMPLIED:
+            break;
         default:
             break;
     }

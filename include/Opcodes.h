@@ -137,11 +137,11 @@
 
 // TSX - Transfer Stack Pointer to X
 
-#define TSX_IMPLIED             0xBA
+#define TSX_IMPLIED             0xBA    // implemented
 
-// TXA - Transfer X to Accumulator
+// TXS - Transfer X to Stack Pointer
 
-#define TXA_IMPLIED             0x8A
+#define TXS_IMPLIED             0x9A    // implemented
 
 // PHA - Push Accumulator
 
