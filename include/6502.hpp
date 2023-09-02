@@ -56,6 +56,7 @@ class CPU {
         StatusFlag  StatusFlag;
         void        Reset(Memory& Memory);
         uint8_t     Fetch(Memory& Memory, Clock& Clock);
+        void        Store(Memory& Memory, Clock& Clock, uint8_t Data);
         void        InstructionCycle(Memory& Memory, Clock& Clock);
 
 };

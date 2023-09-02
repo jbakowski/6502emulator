@@ -60,6 +60,12 @@ uint8_t CPU::Fetch(Memory& Memory, Clock& Clock) {
     return retrievedData;
 }
 
+void CPU::Store(Memory& Memory, Clock& Clock, uint8_t Data) {
+    Memory.Data[Register.PC] = Data;
+    Register.PC++;
+    Clock.Tick(FETCH_BYTE_CYCLE);
+}
+
 void CPU::InstructionCycle(Memory& Memory, Clock& Clock) {
     uint8_t x;
     uint8_t opcode = Fetch(Memory, Clock); // fetch stage
@@ -81,6 +87,52 @@ void CPU::InstructionCycle(Memory& Memory, Clock& Clock) {
             }
             std::cout << "Status flag Z: " << (unsigned)StatusFlag.Z << std::endl;
             std::cout << "Status flag N: " << (unsigned)StatusFlag.N << std::endl;
+            break;
+        case LDX_IMMEDIATE:
+            std::cout << "Register X: " << (unsigned)Register.IRX << std::endl;
+            Register.IRX = Fetch(Memory, Clock);
+            std::cout << "Register X: " << (unsigned)Register.IRX << std::endl;
+            if(Register.IRX == 0x00) {
+                StatusFlag.Z = 1;
+            } else {
+                StatusFlag.Z = 0;
+            }
+            if(Register.IRX & 0b10000000) {
+                StatusFlag.N = 1;
+            } else {
+                StatusFlag.N = 0;
+            }
+            std::cout << "Status flag Z: " << (unsigned)StatusFlag.Z << std::endl;
+            std::cout << "Status flag N: " << (unsigned)StatusFlag.N << std::endl;
+            break;
+        case LDY_IMMEDIATE:
+            std::cout << "Register Y: " << (unsigned)Register.IRY << std::endl;
+            Register.IRY = Fetch(Memory, Clock);
+            std::cout << "Register Y: " << (unsigned)Register.IRY << std::endl;
+            if(Register.IRY == 0x00) {
+                StatusFlag.Z = 1;
+            } else {
+                StatusFlag.Z = 0;
+            }
+            if(Register.IRY & 0b10000000) {
+                StatusFlag.N = 1;
+            } else {
+                StatusFlag.N = 0;
+            }
+            std::cout << "Status flag Z: " << (unsigned)StatusFlag.Z << std::endl;
+            std::cout << "Status flag N: " << (unsigned)StatusFlag.N << std::endl;
+            break;
+        case STA_ZERO_PAGE:
+            Store(Memory, Clock, Register.ACC);
+            Clock.Tick(1);
+            break;
+        case STX_ZERO_PAGE:
+            Store(Memory, Clock, Register.IRX);
+            Clock.Tick(1);
+            break;
+        case STY_ZERO_PAGE:
+            Store(Memory, Clock, Register.IRY);
+            Clock.Tick(1);
             break;
         default:
             break;
