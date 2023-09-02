@@ -8,8 +8,8 @@ GPP_PATH = "C:/MinGW/bin/g++"
 
 parser = argparse.ArgumentParser()
 
-parser.add_argument('-gcc', help="Build the 6502 emulator using GCC", action='store_true')
 parser.add_argument('-clean', help="Clean the build directory", action='store_true')
+parser.add_argument('-gcc', help="Build the 6502 emulator using GCC", action='store_true')
 parser.add_argument('-run', help="Run the executable after building the solution", action='store_true')
 args = parser.parse_args()
 
