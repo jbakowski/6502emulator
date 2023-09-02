@@ -4,6 +4,15 @@
 #include <Opcodes.h>
 #include <iostream>
 
+//#define DEBUG_MODE
+
+#ifdef DEBUG_MODE
+#define DEBUG_STDOUT(x) (std::cout << x)
+#else
+#define DEBUG_STDOUT(x)
+#endif
+
+
 #define MEM_MAX 0xFFFF                        // 6502 processor is capable of addressing at most 64Kb of memory via 16-bit address bus
 
 // special addresses
@@ -22,7 +31,7 @@ class Memory {
 
 class Clock {
     public:
-        uint32_t ClockFrequency = 1;                // accurate simulation of clock speed without running a RTOS is tricky, keep the frequency low
+        uint32_t ClockFrequency = 100;                // accurate simulation of clock speed without running a RTOS is tricky, keep the frequency low
         float    ClockPeriod = 1/ClockFrequency;
         void     SetClockFrequency(uint32_t freq);
         void     Tick(uint32_t ticks);
@@ -53,10 +62,12 @@ class CPU {
 
     public:
         Register    Register;
-        StatusFlag  StatusFlag;
+        StatusFlag  Status;
         void        Reset(Memory& Memory);
         uint8_t     Fetch(Memory& Memory, Clock& Clock);
         void        Store(Memory& Memory, Clock& Clock, uint8_t Data);
+        void        SetZeroFlag(StatusFlag& StatusFlag, uint16_t Register);
+        void        SetNegativeFlag(StatusFlag& StatusFlag, uint16_t Register);
         void        InstructionCycle(Memory& Memory, Clock& Clock);
 
 };

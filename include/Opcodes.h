@@ -115,13 +115,59 @@
 // ###   REGISTER TRANSFERS    ###
 // ###############################
 
+// TAX - Transfer Accumulator to X
+
+#define TAX_IMPLIED             0xAA    // implemented
+
+// TAY - Transfer Accumulator to Y
+
+#define TAY_IMPLIED             0xA8    // implemented
+
+// TXA - Transfer X to Accumulator
+
+#define TXA_IMPLIED             0x8A    // implemented
+
+// TYA - Transfer Y to Accumulator
+
+#define TYA_IMPLIED             0x98    // implemented
+
 // ###############################
 // ###    STACK  OPERATIONS    ###
 // ###############################
 
+// TSX - Transfer Stack Pointer to X
+
+#define TSX_IMPLIED             0xBA
+
+// TXA - Transfer X to Accumulator
+
+#define TXA_IMPLIED             0x8A
+
+// PHA - Push Accumulator
+
+#define PHA_IMPLIED             0x48
+
+// PHP - Push Processor Status
+
+#define PHP_IMPLIED             0x08
+
+// PLA - Pull Accumulator
+
+#define PLA_IMPLIED             0x68
+
+// PLP - Pull Processor
+
+#define PLP_IMPLIED             0x28
+
 // ###############################
 // ###         LOGICAL         ###
 // ###############################
+
+// AND - Logcial AND
+
+#define AND_IMMEDIATE           0x29
+
+
 
 // ###############################
 // ###     INC/DECREMENTS      ###
