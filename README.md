@@ -26,17 +26,17 @@ In order to turn on extensive debug logging, uncomment the DEBUG_MODE define pre
 
 All instructions in Opcodes.h with a ```// implemented``` comment are implemented.<br/>
 
-All LOAD / STORE operations with an immediate addressing mode are implemented.
-All REGISTER TRANSFERS operations are implemented.
-All STACK OPERATIONS are implemented.
+All LOAD / STORE operations with an immediate addressing mode are implemented.<br/>
+All REGISTER TRANSFERS operations are implemented.<br/>
+All STACK OPERATIONS are implemented.<br/>
 
-To do: 
-INC / DEC
-SHIFTS
-JUMPS
-BRANCHES
-STATUS FLAG CHANGES
-SYSTEM FUNCTIONS
+To do: <br/>
+INC / DEC<br/>
+SHIFTS<br/>
+JUMPS<br/>
+BRANCHES<br/>
+STATUS FLAG CHANGES<br/>
+SYSTEM FUNCTIONS<br/>
 
 ## Miscellaneous<br/>
 
