@@ -18,6 +18,10 @@ To clean the build directory, run the following command in user terminal:<br/>
 
 ```python build.py -clean```<br/>
 
+## Debug mode<br/>
+
+In order to turn on extensive debug logging, uncomment the DEBUG_MODE define present in 6502.hpp file.<br/>
+
 ## Miscellaneous<br/>
 
 ### Asserts<br/>
@@ -32,3 +36,6 @@ Emulator does not assert if any R/W operation is to be performed outside of the 
 
  Pushing data onto the stack puts the data onto the stack first and then decrements the stack pointer.<br/>
  Popping data from the stack increments the stack pointer first and then pulls the data from the stack.
+
+
+  
