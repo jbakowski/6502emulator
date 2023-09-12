@@ -22,6 +22,22 @@ To clean the build directory, run the following command in user terminal:<br/>
 
 In order to turn on extensive debug logging, uncomment the DEBUG_MODE define present in 6502.hpp file.<br/>
 
+## Implemented instructions
+
+All instructions in Opcodes.h with a ```// implemented``` comment are implemented.<br/>
+
+All LOAD / STORE operations with an immediate addressing mode are implemented.
+All REGISTER TRANSFERS operations are implemented.
+All STACK OPERATIONS are implemented.
+
+To do: 
+INC / DEC
+SHIFTS
+JUMPS
+BRANCHES
+STATUS FLAG CHANGES
+SYSTEM FUNCTIONS
+
 ## Miscellaneous<br/>
 
 ### Asserts<br/>
@@ -36,6 +52,11 @@ Emulator does not assert if any R/W operation is to be performed outside of the 
 
  Pushing data onto the stack puts the data onto the stack first and then decrements the stack pointer.<br/>
  Popping data from the stack increments the stack pointer first and then pulls the data from the stack.
+
+## Possible further additions<br/>
+
+Implementing a way to load in a binary file containing program data to be run by the emulated processor.<br/>
+Implementing a parser written in Python decoding a file with assembly code and turning it into a binary file to be loaded into the processor's memory.
 
 
   

@@ -153,22 +153,22 @@
 
 // PHA - Push Accumulator
 
-#define PHA_IMPLIED             0x48
+#define PHA_IMPLIED             0x48    // implemented
 #define PHA_IMPLIED_CYCLE       3
 
 // PHP - Push Processor Status
 
-#define PHP_IMPLIED             0x08
+#define PHP_IMPLIED             0x08    // implemented
 #define PHP_IMPLIED_CYCLE       3
 
 // PLA - Pull Accumulator
 
-#define PLA_IMPLIED             0x68
+#define PLA_IMPLIED             0x68    // implemented
 #define PLA_IMPLIED_CYCLE       4
 
 // PLP - Pull Processor
 
-#define PLP_IMPLIED             0x28
+#define PLP_IMPLIED             0x28    // implemented
 #define PLP_IMPLIED_CYCLE       4
 
 // ###############################
