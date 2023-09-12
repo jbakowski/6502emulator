@@ -1,6 +1,8 @@
-// cycles for fundamental processor operations (memory R/W, stack POP/PUSH, etc)
-
-#define FETCH_BYTE_CYCLE 2
+#ifndef OPCODES_H
+#define OPCODES_H
+// not all instructions have a constant cycle count (branch instructions or accessing memory across pages, for example)
+// therefore, the listed cycle count is the minimal count for a given opcode
+// extra cycles, if needed, ought to be added in the instruction implementation
 
 // ###############################
 // ### LOAD / STORE OPERATIONS ###
@@ -41,7 +43,7 @@
 #define LDX_ZERO_PAGE_CYCLE     3
 
 #define LDX_ZERO_PAGE_Y         0xB6
-#define LDX_ZERO_PAGE_Y_CYCLE  4
+#define LDX_ZERO_PAGE_Y_CYCLE   4
 
 #define LDX_ABSOLUTE            0xAE
 #define LDX_ABSOLUTE_CYCLE      4
@@ -118,18 +120,22 @@
 // TAX - Transfer Accumulator to X
 
 #define TAX_IMPLIED             0xAA    // implemented
+#define TAX_IMPLIED_CYCLE       2
 
 // TAY - Transfer Accumulator to Y
 
 #define TAY_IMPLIED             0xA8    // implemented
+#define TAY_IMPLIED_CYCLE       2
 
 // TXA - Transfer X to Accumulator
 
 #define TXA_IMPLIED             0x8A    // implemented
+#define TXA_IMPLIED_CYCLE       2
 
 // TYA - Transfer Y to Accumulator
 
 #define TYA_IMPLIED             0x98    // implemented
+#define TYA_IMPLIED_CYCLE       2
 
 // ###############################
 // ###    STACK  OPERATIONS    ###
@@ -138,26 +144,32 @@
 // TSX - Transfer Stack Pointer to X
 
 #define TSX_IMPLIED             0xBA    // implemented
+#define TSX_IMPLIED_CYCLE       2
 
 // TXS - Transfer X to Stack Pointer
 
 #define TXS_IMPLIED             0x9A    // implemented
+#define TXS_IMPLIED_CYCLE       2
 
 // PHA - Push Accumulator
 
 #define PHA_IMPLIED             0x48
+#define PHA_IMPLIED_CYCLE       3
 
 // PHP - Push Processor Status
 
 #define PHP_IMPLIED             0x08
+#define PHP_IMPLIED_CYCLE       3
 
 // PLA - Pull Accumulator
 
 #define PLA_IMPLIED             0x68
+#define PLA_IMPLIED_CYCLE       4
 
 // PLP - Pull Processor
 
 #define PLP_IMPLIED             0x28
+#define PLP_IMPLIED_CYCLE       4
 
 // ###############################
 // ###         LOGICAL         ###
@@ -192,3 +204,4 @@
 // ###############################
 // ###     SYSTEM FUNCTIONS    ###
 // ###############################
+#endif

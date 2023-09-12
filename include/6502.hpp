@@ -1,8 +1,7 @@
-//#ifndef 6502_H
-//#define 6502_H
 #include <stdint.h>
 #include <Opcodes.h>
 #include <iostream>
+#include <assert.h>
 
 //#define DEBUG_MODE
 
@@ -61,14 +60,20 @@ class CPU {
     };
 
     public:
+        // objects
         Register    Register;
         StatusFlag  Status;
+        // memory-related
         void        Reset(Memory& Memory);
-        uint8_t     Fetch(Memory& Memory, Clock& Clock);
-        void        Store(Memory& Memory, Clock& Clock, uint8_t Data);
+        uint8_t     Fetch(Memory& Memory);
+        void        Store(Memory& Memory, uint8_t Data);
+        // stack-related
+        void        PushToStack(Memory& Memory, uint8_t Data);
+        uint8_t     PopFromStack(Memory& Memory);
+
+        // instruction-related
         void        SetZeroFlag(StatusFlag& StatusFlag, uint16_t Register);
         void        SetNegativeFlag(StatusFlag& StatusFlag, uint16_t Register);
         void        InstructionCycle(Memory& Memory, Clock& Clock);
 
 };
-//#endif
