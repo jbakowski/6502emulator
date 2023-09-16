@@ -3,14 +3,13 @@
 #include <iostream>
 #include <assert.h>
 
-//#define DEBUG_MODE
+#define DEBUG_MODE
 
 #ifdef DEBUG_MODE
 #define DEBUG_STDOUT(x) (std::cout << x)
 #else
 #define DEBUG_STDOUT(x)
 #endif
-
 
 #define MEM_MAX 0xFFFF                        // 6502 processor is capable of addressing at most 64Kb of memory via 16-bit address bus
 
@@ -67,6 +66,8 @@ class CPU {
         void        Reset(Memory& Memory);
         uint8_t     Fetch(Memory& Memory);
         void        Store(Memory& Memory, uint8_t Data);
+        uint8_t     ReadByte(Memory& Memory, uint16_t Address);
+        void        WriteByte(Memory& Memory, uint16_t Address, uint8_t Data);
         // stack-related
         void        PushToStack(Memory& Memory, uint8_t Data);
         uint8_t     PopFromStack(Memory& Memory);

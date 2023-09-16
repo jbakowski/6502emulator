@@ -63,12 +63,16 @@ uint8_t CPU::Fetch(Memory& Memory) {
 }
 
 void CPU::Store(Memory& Memory, uint8_t Data) {
-    DEBUG_STDOUT("Register.PC: " << (unsigned)Register.PC << std::endl);
-    DEBUG_STDOUT("Data to be saved: " << (unsigned)Data << std::endl);
     Memory.Data[Register.PC] = Data;
-    DEBUG_STDOUT("Memory.Data[Register.PC]: " << (unsigned)Memory.Data[Register.PC] << std::endl);
     Register.PC++;
-    DEBUG_STDOUT("Register.PC: " << (unsigned)Register.PC << std::endl);
+}
+
+uint8_t CPU::ReadByte(Memory& Memory, uint16_t Address) {
+    return Memory.Data[Address];
+};
+
+void CPU::WriteByte(Memory& Memory, uint16_t Address, uint8_t Data) {
+    Memory.Data[Address] = Data;
 }
 
 void CPU::PushToStack(Memory& Memory, uint8_t Data) {
@@ -108,9 +112,9 @@ void CPU::SetNegativeFlag(StatusFlag& StatusFlag, uint16_t Register) {
 
 void CPU::InstructionCycle(Memory& Memory, Clock& Clock) {
     uint8_t opcode = Fetch(Memory); // fetch stage
-    DEBUG_STDOUT ("Opcode read: " << (unsigned)opcode << std::endl); 
     switch(opcode) {                // decode stage
         case LDA_IMMEDIATE:         // execute stage
+            DEBUG_STDOUT("---------- " << "LDA_IMMEDIATE" << " ----------" << std::endl);
             DEBUG_STDOUT ("Accumulator (before): " << (unsigned)Register.ACC << std::endl);
             Register.ACC = Fetch(Memory);
             DEBUG_STDOUT("Accumulator (after): " << (unsigned)Register.ACC << std::endl);
@@ -122,6 +126,7 @@ void CPU::InstructionCycle(Memory& Memory, Clock& Clock) {
             Clock.Tick(LDA_IMMEDIATE_CYCLE);
             break;
         case LDX_IMMEDIATE:
+            DEBUG_STDOUT("---------- " << "LDX_IMMEDIATE" << " ----------" << std::endl);
             DEBUG_STDOUT("Register X (before): " << (unsigned)Register.IRX << std::endl);
             Register.IRX = Fetch(Memory);
             DEBUG_STDOUT("Register X (after): " << (unsigned)Register.IRX << std::endl);
@@ -132,6 +137,7 @@ void CPU::InstructionCycle(Memory& Memory, Clock& Clock) {
             Clock.Tick(LDX_IMMEDIATE_CYCLE);
             break;
         case LDY_IMMEDIATE:
+            DEBUG_STDOUT("---------- " << "LDY_IMMEDIATE" << " ----------" << std::endl);
             DEBUG_STDOUT("Register Y (before): " << (unsigned)Register.IRY << std::endl);
             Register.IRY = Fetch(Memory);
             DEBUG_STDOUT("Register Y (after): " << (unsigned)Register.IRY << std::endl);
@@ -142,18 +148,22 @@ void CPU::InstructionCycle(Memory& Memory, Clock& Clock) {
             Clock.Tick(LDY_IMMEDIATE_CYCLE);
             break;
         case STA_ZERO_PAGE:
+            DEBUG_STDOUT("---------- " << "STA_ZERO_PAGE" << " ----------" << std::endl);
             Store(Memory, Register.ACC);
             Clock.Tick(STA_ZERO_PAGE_CYCLE);
             break;
         case STX_ZERO_PAGE:
+            DEBUG_STDOUT("---------- " << "STX_ZERO_PAGE" << " ----------" << std::endl);
             Store(Memory, Register.IRX);
             Clock.Tick(STX_ZERO_PAGE_CYCLE);
             break;
         case STY_ZERO_PAGE:
+            DEBUG_STDOUT("---------- " << "STY_ZERO_PAGE" << " ----------" << std::endl);
             Store(Memory, Register.IRY);
             Clock.Tick(STY_ZERO_PAGE_CYCLE);
             break;
         case TAX_IMPLIED:
+            DEBUG_STDOUT("---------- " << "TAX_IMPLIED" << " ----------" << std::endl);
             DEBUG_STDOUT("Register.IRX (before): " << (unsigned)Register.IRX << std::endl);
             DEBUG_STDOUT("Register.ACC (before): " << (unsigned)Register.ACC << std::endl);
             Register.IRX = Register.ACC;
@@ -165,6 +175,7 @@ void CPU::InstructionCycle(Memory& Memory, Clock& Clock) {
             Clock.Tick(TAX_IMPLIED_CYCLE);
             break;
         case TAY_IMPLIED:
+            DEBUG_STDOUT("---------- " << "TAY_IMPLIED" << " ----------" << std::endl);
             DEBUG_STDOUT("Register.IRY (before): " << (unsigned)Register.IRY << std::endl);
             DEBUG_STDOUT("Register.ACC (before): " << (unsigned)Register.ACC << std::endl);
             Register.IRY = Register.ACC;
@@ -175,6 +186,7 @@ void CPU::InstructionCycle(Memory& Memory, Clock& Clock) {
             DEBUG_STDOUT("Status.N: " << (unsigned)Status.N << std::endl);
             Clock.Tick(TAY_IMPLIED_CYCLE);
         case TXA_IMPLIED:
+            DEBUG_STDOUT("---------- " << "TXA_IMPLIED" << " ----------" << std::endl);
             DEBUG_STDOUT("Register.ACC (before): " << (unsigned)Register.ACC << std::endl);
             DEBUG_STDOUT("Register.IRX (before): " << (unsigned)Register.IRX << std::endl);
             Register.ACC = Register.IRX;
@@ -184,6 +196,7 @@ void CPU::InstructionCycle(Memory& Memory, Clock& Clock) {
             Clock.Tick(TXA_IMPLIED_CYCLE);
             break;
         case TYA_IMPLIED:
+            DEBUG_STDOUT("---------- " << "TYA_IMPLIED" << " ----------" << std::endl);
             DEBUG_STDOUT("Register.ACC (before): " << (unsigned)Register.ACC << std::endl);
             DEBUG_STDOUT("Register.IRY (before): " << (unsigned)Register.IRY << std::endl);
             Register.ACC = Register.IRY;
@@ -195,6 +208,7 @@ void CPU::InstructionCycle(Memory& Memory, Clock& Clock) {
             Clock.Tick(TYA_IMPLIED_CYCLE);
             break;
         case TSX_IMPLIED:
+            DEBUG_STDOUT("---------- " << "TSX_IMPLIED" << " ----------" << std::endl);
             DEBUG_STDOUT("Register.IRX (before): " << (unsigned)Register.IRX << std::endl);
             DEBUG_STDOUT("Register.SP (before): " << (unsigned)Register.SP << std::endl);
             Register.IRX = Register.SP;
@@ -206,6 +220,7 @@ void CPU::InstructionCycle(Memory& Memory, Clock& Clock) {
             Clock.Tick(TSX_IMPLIED_CYCLE);
             break;
         case TXS_IMPLIED:
+            DEBUG_STDOUT("---------- " << "TXS_IMPLIED" << " ----------" << std::endl);
             DEBUG_STDOUT("Register.SP (before): " << (unsigned)Register.SP << std::endl);
             DEBUG_STDOUT("Register.IRX (before): " << (unsigned)Register.IRX << std::endl);
             Register.SP = Register.IRX;
@@ -213,6 +228,7 @@ void CPU::InstructionCycle(Memory& Memory, Clock& Clock) {
             Clock.Tick(TXS_IMPLIED_CYCLE);
             break;
         case PHA_IMPLIED:
+            DEBUG_STDOUT("---------- " << "PHA_IMPLIED" << " ----------" << std::endl);
             DEBUG_STDOUT("Accumulator: " << (unsigned)Register.ACC << std::endl);
             PushToStack(Memory, Register.ACC);
             DEBUG_STDOUT("Status flags (C-Z-I-D-B-O-N) [PHA]: " << (unsigned)Status.C << (unsigned)Status.Z << (unsigned)Status.I << (unsigned)Status.D << (unsigned)Status.B << (unsigned)Status.O << (unsigned)Status.N << std::endl);
@@ -220,6 +236,7 @@ void CPU::InstructionCycle(Memory& Memory, Clock& Clock) {
             break;
         case PHP_IMPLIED:
         {   
+            DEBUG_STDOUT("---------- " << "PHP_IMPLIED" << " ----------" << std::endl);
             // TODO: there must be a nicer way to do this
             DEBUG_STDOUT("Status flags (C-Z-I-D-B-O-N) [actual]: " << (unsigned)Status.C << (unsigned)Status.Z << (unsigned)Status.I << (unsigned)Status.D << (unsigned)Status.B << (unsigned)Status.O << (unsigned)Status.N << std::endl);
             uint8_t statusCopy = 0;
@@ -230,6 +247,7 @@ void CPU::InstructionCycle(Memory& Memory, Clock& Clock) {
             break;
         }
         case PLA_IMPLIED:
+            DEBUG_STDOUT("---------- " << "PLA_IMPLIED" << " ----------" << std::endl);
             DEBUG_STDOUT("Accumulator (before): " << (unsigned)Register.ACC << std::endl);
             Register.ACC = PopFromStack(Memory);
             SetZeroFlag(Status, Register.ACC);
@@ -241,6 +259,7 @@ void CPU::InstructionCycle(Memory& Memory, Clock& Clock) {
             break;
         case PLP_IMPLIED:
         {
+            DEBUG_STDOUT("---------- " << "PLP_IMPLIED" << " ----------" << std::endl);
             // TODO: there must be a nicer way to do this
             DEBUG_STDOUT("Status flags (C-Z-I-D-B-O-N) [before]: " << (unsigned)Status.C << (unsigned)Status.Z << (unsigned)Status.I << (unsigned)Status.D << (unsigned)Status.B << (unsigned)Status.O << (unsigned)Status.N << std::endl);
             uint8_t statusCopy = PopFromStack(Memory);
@@ -257,6 +276,296 @@ void CPU::InstructionCycle(Memory& Memory, Clock& Clock) {
             Clock.Tick(PLP_IMPLIED_CYCLE);
             break;
         }
+        case AND_IMMEDIATE:
+        {
+            DEBUG_STDOUT("---------- " << "AND_IMMEDIATE" << " ----------" << std::endl);
+            DEBUG_STDOUT("Accumulator status [before]: " << (unsigned)Register.ACC << std::endl);
+            uint8_t data = Fetch(Memory);
+            DEBUG_STDOUT("Data fetched: " << (unsigned)data << std::endl);
+            Register.ACC = Register.ACC & data;
+            SetZeroFlag(Status, Register.ACC);
+            SetNegativeFlag(Status, Register.ACC);
+            DEBUG_STDOUT("Accumulator status [after]: " << (unsigned)Register.ACC << std::endl);
+            DEBUG_STDOUT("Status flag Z: " << (unsigned)Status.Z << std::endl);
+            DEBUG_STDOUT("Status flag N: " << (unsigned)Status.N << std::endl);
+            Clock.Tick(AND_IMMEDIATE_CYCLE);
+            break;
+        }
+        case EOR_IMMEDIATE:
+        {
+            DEBUG_STDOUT("---------- " << "EOR_IMMEDIATE" << " ----------" << std::endl);
+            DEBUG_STDOUT("Accumulator status [before]: " << (unsigned)Register.ACC << std::endl);
+            uint8_t data = Fetch(Memory);
+            DEBUG_STDOUT("Data fetched: " << (unsigned)data << std::endl);
+            Register.ACC = Register.ACC ^ data;
+            SetZeroFlag(Status, Register.ACC);
+            SetNegativeFlag(Status, Register.ACC);
+            DEBUG_STDOUT("Accumulator status [after]: " << (unsigned)Register.ACC << std::endl);
+            DEBUG_STDOUT("Status flag Z: " << (unsigned)Status.Z << std::endl);
+            DEBUG_STDOUT("Status flag N: " << (unsigned)Status.N << std::endl);
+            Clock.Tick(EOR_IMMEDIATE_CYCLE);
+            break;
+        }
+        case ORA_IMMEDIATE:
+        {
+            DEBUG_STDOUT("---------- " << "ORA_IMPLIED" << " ----------" << std::endl);
+            DEBUG_STDOUT("Accumulator status [before]: " << (unsigned)Register.ACC << std::endl);
+            uint8_t data = Fetch(Memory);
+            DEBUG_STDOUT("Data fetched: " << (unsigned)data << std::endl);
+            Register.ACC = Register.ACC | data;
+            SetZeroFlag(Status, Register.ACC);
+            SetNegativeFlag(Status, Register.ACC);
+            DEBUG_STDOUT("Accumulator status [after]: " << (unsigned)Register.ACC << std::endl);
+            DEBUG_STDOUT("Status flag Z: " << (unsigned)Status.Z << std::endl);
+            DEBUG_STDOUT("Status flag N: " << (unsigned)Status.N << std::endl);
+            Clock.Tick(ORA_IMMEDIATE_CYCLE);
+            break;
+        }
+        case BIT_TEST_ZEROPAGE:
+        {
+            DEBUG_STDOUT("---------- " << "BIT_TEST_ZEROPAGE" << " ----------" << std::endl);
+            DEBUG_STDOUT("Accumulator status [before]: " << (unsigned)Register.ACC << std::endl);
+            uint8_t dataAddress = Fetch(Memory);
+            DEBUG_STDOUT("Data address: " << (unsigned)dataAddress << std::endl);
+            uint8_t data = ReadByte(Memory, dataAddress);
+            uint8_t mask = 0;
+            DEBUG_STDOUT("Data fetched: " << (unsigned)data << std::endl);
+            mask = Register.ACC & data;
+            DEBUG_STDOUT("Mask: " << (unsigned)mask << std::endl);
+            if (mask == 0) {
+                Status.Z = 1;
+            }
+            Status.O = (mask >> 6) & 0x1;
+            Status.N = (mask >> 7) & 0x1;
+            DEBUG_STDOUT("Status flag Z: " << (unsigned)Status.Z << std::endl);
+            DEBUG_STDOUT("Status flag O: " << (unsigned)Status.O << std::endl);
+            DEBUG_STDOUT("Status flag N: " << (unsigned)Status.N << std::endl);
+            Clock.Tick(BIT_TEST_ZEROPAGE_CYCLE);
+            break;
+        }
+        case ADC_IMMEDIATE:
+        {
+            DEBUG_STDOUT("---------- " << "ADC_IMMEDIATE" << " ----------" << std::endl);
+            DEBUG_STDOUT("Accumulator status [before]: " << (unsigned)Register.ACC << std::endl);
+            DEBUG_STDOUT("Carry flag: " << (unsigned)Status.C << std::endl);
+            uint8_t data = Fetch(Memory);
+
+            uint8_t differentSign = 0;
+            uint8_t operandXor = 0;
+
+            // if bit 7 of operandXor is 1 - the signs of ACC and data are different
+            operandXor = Register.ACC ^ data;
+            if ((operandXor >> 7) & Status.N) {
+                differentSign = 1;
+            }
+            DEBUG_STDOUT("Different sign of the values: " << (unsigned)differentSign<< std::endl);
+            
+            uint16_t sum = Register.ACC;
+
+            sum = sum + data;
+            sum = sum + Status.C;
+
+            Register.ACC = sum & 0xFF;
+            if(sum > 0xFF) {
+                Status.C = 1;
+            }
+            SetZeroFlag(Status, Register.ACC);
+            SetNegativeFlag(Status, Register.ACC);
+
+            operandXor = Register.ACC ^ data;
+            // oldDifferentSign != newDifferentSign -> overflow
+            if(differentSign != ((operandXor >> 7) & Status.N)) {
+                Status.O = 1;
+            }
+            DEBUG_STDOUT("Status flag C: " << (unsigned)Status.C << std::endl);
+            DEBUG_STDOUT("Status flag Z: " << (unsigned)Status.Z << std::endl);
+            DEBUG_STDOUT("Status flag O: " << (unsigned)Status.O << std::endl);
+            DEBUG_STDOUT("Status flag N: " << (unsigned)Status.N << std::endl);
+            Clock.Tick(ADC_IMMEDIATE_CYCLE);
+            break;
+        }
+        case SBC_IMMEDIATE:
+        {
+            DEBUG_STDOUT("---------- " << "SBC_IMMEDIATE" << " ----------" << std::endl);
+            DEBUG_STDOUT("Accumulator status [before]: " << (unsigned)Register.ACC << std::endl);
+            DEBUG_STDOUT("Carry flag: " << (unsigned)Status.C << std::endl);
+            uint8_t data = Fetch(Memory);
+
+            uint8_t differentSign = 0;
+            uint8_t operandXor = 0;
+
+            // if bit 7 of operandXor is 1 - the signs of ACC and data are different
+            operandXor = Register.ACC ^ data;
+            if ((operandXor >> 7) & Status.N) {
+                differentSign = 1;
+            }
+            DEBUG_STDOUT("Different sign of the values: " << (unsigned)differentSign<< std::endl);
+            
+            int16_t sum = Register.ACC;
+
+            sum = sum - data;
+            sum = sum - Status.C;
+
+            Register.ACC = sum & 0xFF;
+            if(sum > 0xFF) {
+                Status.C = 0;
+            }
+            SetZeroFlag(Status, Register.ACC);
+            SetNegativeFlag(Status, Register.ACC);
+
+            operandXor = Register.ACC ^ data;
+            // oldDifferentSign != newDifferentSign -> overflow
+            if(differentSign != ((operandXor >> 7) & Status.N)) {
+                Status.O = 1;
+            }
+            DEBUG_STDOUT("Status flag C: " << (unsigned)Status.C << std::endl);
+            DEBUG_STDOUT("Status flag Z: " << (unsigned)Status.Z << std::endl);
+            DEBUG_STDOUT("Status flag O: " << (unsigned)Status.O << std::endl);
+            DEBUG_STDOUT("Status flag N: " << (unsigned)Status.N << std::endl);
+            Clock.Tick(SBC_IMMEDIATE_CYCLE);
+            break;
+        }
+        case CMP_IMMEDIATE:
+        {
+            DEBUG_STDOUT("---------- " << "CMP_IMMEDIATE" << " ----------" << std::endl);
+            uint8_t data = Fetch(Memory);
+            DEBUG_STDOUT("Accumulator status: " << (unsigned)Register.ACC << std::endl);
+            DEBUG_STDOUT("Data: " << (unsigned)data << std::endl);
+            if(data == Register.ACC) {
+                Status.Z = 1;
+            }
+            if(Register.ACC > data) {
+                Status.C = 1;
+            }
+            if(data > Register.ACC) {
+                Status.N = 1;
+            }
+            DEBUG_STDOUT("Status flag C: " << (unsigned)Status.C << std::endl);
+            DEBUG_STDOUT("Status flag Z: " << (unsigned)Status.Z << std::endl);
+            DEBUG_STDOUT("Status flag N: " << (unsigned)Status.N << std::endl);
+            Clock.Tick(CMP_IMMEDIATE_CYCLE);
+            break;
+        }
+        case CPX_IMMEDIATE:
+        {
+            DEBUG_STDOUT("---------- " << "CPX_IMMEDIATE" << " ----------" << std::endl);
+            uint8_t data = Fetch(Memory);
+            DEBUG_STDOUT("IRX status: " << (unsigned)Register.IRX << std::endl);
+            DEBUG_STDOUT("Data: " << (unsigned)data << std::endl);
+            if(data == Register.IRX) {
+                Status.Z = 1;
+            }
+            if(Register.IRX > data) {
+                Status.C = 1;
+            }
+            if(data > Register.IRX) {
+                Status.N = 1;
+            }
+            DEBUG_STDOUT("Status flag C: " << (unsigned)Status.C << std::endl);
+            DEBUG_STDOUT("Status flag Z: " << (unsigned)Status.Z << std::endl);
+            DEBUG_STDOUT("Status flag N: " << (unsigned)Status.N << std::endl);
+            Clock.Tick(CPX_IMMEDIATE_CYCLE);
+            break;
+        }
+        case CPY_IMMEDIATE:
+        {
+            DEBUG_STDOUT("---------- " << "CPY_IMMEDIATE" << " ----------" << std::endl);
+            uint8_t data = Fetch(Memory);
+            DEBUG_STDOUT("IRY status: " << (unsigned)Register.IRY << std::endl);
+            DEBUG_STDOUT("Data: " << (unsigned)data << std::endl);
+            if(data == Register.IRY) {
+                Status.Z = 1;
+            }
+            if(Register.IRY > data) {
+                Status.C = 1;
+            }
+            if(data > Register.IRY) {
+                Status.N = 1;
+            }
+            DEBUG_STDOUT("Status flag C: " << (unsigned)Status.C << std::endl);
+            DEBUG_STDOUT("Status flag Z: " << (unsigned)Status.Z << std::endl);
+            DEBUG_STDOUT("Status flag N: " << (unsigned)Status.N << std::endl);
+            Clock.Tick(CPY_IMMEDIATE_CYCLE);
+            break;
+        }
+        case INC_ZEROPAGE:
+        {   
+            DEBUG_STDOUT("---------- " << "INC_ZEROPAGE" << " ----------" << std::endl);
+            uint8_t dataAddress = Fetch(Memory);
+            DEBUG_STDOUT("Data address: " << (unsigned)dataAddress << std::endl);
+            uint8_t data = ReadByte(Memory, dataAddress);
+            DEBUG_STDOUT("Data [before]: " << (unsigned)data << std::endl);
+            data = data + 1;
+            DEBUG_STDOUT("Data [after]: " << (unsigned)data << std::endl);
+            SetNegativeFlag(Status, data);
+            SetZeroFlag(Status, data);
+            WriteByte(Memory, dataAddress, ReadByte(Memory, dataAddress) + 1);
+            DEBUG_STDOUT("Status flag Z: " << (unsigned)Status.Z << std::endl);
+            DEBUG_STDOUT("Status flag N: " << (unsigned)Status.N << std::endl);
+            Clock.Tick(INC_ZEROPAGE_CYCLE);
+            break;
+        }
+        case INX_IMPLIED:
+            DEBUG_STDOUT("---------- " << "INX_ZEROPAGE" << " ----------" << std::endl);
+            DEBUG_STDOUT("IRX [before]: " << (unsigned)Register.IRX << std::endl);
+            Register.IRX = Register.IRX + 1;
+            DEBUG_STDOUT("IRX [after]: " << (unsigned)Register.IRX << std::endl);
+            SetNegativeFlag(Status, Register.IRX);
+            SetZeroFlag(Status, Register.IRX);
+            DEBUG_STDOUT("Status flag Z: " << (unsigned)Status.Z << std::endl);
+            DEBUG_STDOUT("Status flag N: " << (unsigned)Status.N << std::endl);
+            Clock.Tick(INX_IMPLIED_CYCLE);
+            break;
+        case INY_IMPLIED:
+            DEBUG_STDOUT("---------- " << "INY_ZEROPAGE" << " ----------" << std::endl);
+            DEBUG_STDOUT("IRY [before]: " << (unsigned)Register.IRY << std::endl);
+            Register.IRY = Register.IRY + 1;
+            DEBUG_STDOUT("IRY [after]: " << (unsigned)Register.IRY << std::endl);
+            SetNegativeFlag(Status, Register.IRY);
+            SetZeroFlag(Status, Register.IRY);
+            DEBUG_STDOUT("Status flag Z: " << (unsigned)Status.Z << std::endl);
+            DEBUG_STDOUT("Status flag N: " << (unsigned)Status.N << std::endl);
+            Clock.Tick(INY_IMPLIED_CYCLE);
+            break;
+        case DEC_ZEROPAGE:
+        {
+            DEBUG_STDOUT("---------- " << "DEC_ZEROPAGE" << " ----------" << std::endl);
+            uint8_t dataAddress = Fetch(Memory);
+            DEBUG_STDOUT("Data address: " << (unsigned)dataAddress << std::endl);
+            uint8_t data = ReadByte(Memory, dataAddress);
+            DEBUG_STDOUT("Data [before]: " << (unsigned)data << std::endl);
+            data = data - 1;
+            DEBUG_STDOUT("Data [after]: " << (unsigned)data << std::endl);
+            SetNegativeFlag(Status, data);
+            SetZeroFlag(Status, data);
+            WriteByte(Memory, dataAddress, ReadByte(Memory, dataAddress) - 1);
+            DEBUG_STDOUT("Status flag Z: " << (unsigned)Status.Z << std::endl);
+            DEBUG_STDOUT("Status flag N: " << (unsigned)Status.N << std::endl);
+            Clock.Tick(DEC_ZEROPAGE_CYCLE);
+            break;
+        }
+        case DEX_IMPLIED:
+            DEBUG_STDOUT("---------- " << "DEX_ZEROPAGE" << " ----------" << std::endl);
+            DEBUG_STDOUT("IRX [before]: " << (unsigned)Register.IRX << std::endl);
+            Register.IRX = Register.IRX - 1;
+            DEBUG_STDOUT("IRX [before]: " << (unsigned)Register.IRX << std::endl);
+            SetNegativeFlag(Status, Register.IRX);
+            SetZeroFlag(Status, Register.IRX);
+            DEBUG_STDOUT("Status flag Z: " << (unsigned)Status.Z << std::endl);
+            DEBUG_STDOUT("Status flag N: " << (unsigned)Status.N << std::endl);
+            Clock.Tick(DEX_IMPLIED_CYCLE);
+            break;
+        case DEY_IMPLIED:
+            DEBUG_STDOUT("---------- " << "DEY_ZEROPAGE" << " ----------" << std::endl);
+            DEBUG_STDOUT("IRY [before]: " << (unsigned)Register.IRY << std::endl);
+            Register.IRY = Register.IRY - 1;
+            DEBUG_STDOUT("IRY [before]: " << (unsigned)Register.IRY << std::endl);
+            SetNegativeFlag(Status, Register.IRY);
+            SetZeroFlag(Status, Register.IRY);
+            DEBUG_STDOUT("Status flag Z: " << (unsigned)Status.Z << std::endl);
+            DEBUG_STDOUT("Status flag N: " << (unsigned)Status.N << std::endl);
+            Clock.Tick(DEY_IMPLIED_CYCLE);
+            break;
         default:
             break;
     }

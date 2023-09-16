@@ -29,9 +29,11 @@ All instructions in Opcodes.h with a ```// implemented``` comment are implemente
 All LOAD / STORE operations with an immediate addressing mode are implemented.<br/>
 All REGISTER TRANSFERS operations are implemented.<br/>
 All STACK OPERATIONS are implemented.<br/>
+All LOGICAL operations with an immediate addressing mode are implemented.<br/>
+All ARITHMETIC operations with an immediate addressing mode are implemented.<br/>
+All INC / DEC operations with an implied addressing mode are implemented.<br/>
 
 To do: <br/>
-INC / DEC<br/>
 SHIFTS<br/>
 JUMPS<br/>
 BRANCHES<br/>

@@ -8,29 +8,26 @@ int main() {
     Clock Clock;
     Mem.Init();
     Cpu.Reset(Mem);
+    uint8_t A = 0b11001111;
+    uint8_t B = 0b10001001;
     std::cout << "Starting operations." << std::hex << std::endl; // just an excuse to turn on hex formatting
     // inline assembly
+    Mem.Data[0x00FF] = B;
     Mem.Data[0x0000] = LDA_IMMEDIATE;
-    Mem.Data[0x0001] = 0x33;
-    Mem.Data[0x0002] = PHA_IMPLIED;
-    Mem.Data[0x0003] = PLP_IMPLIED;
-    Mem.Data[0x0004] = LDA_IMMEDIATE;
-    Mem.Data[0x0005] = 0x43;
-    Mem.Data[0x0006] = PHA_IMPLIED;
-    Mem.Data[0x0007] = PHP_IMPLIED;
-    Mem.Data[0x0008] = PLA_IMPLIED;
-    Mem.Data[0x0009] = TAX_IMPLIED;
-    Mem.Data[0x000A] = PLA_IMPLIED;
-    Mem.Data[0x000B] = TAY_IMPLIED;
+    Mem.Data[0x0001] = A;
+    Mem.Data[0x0002] = BIT_TEST_ZEROPAGE;
+    Mem.Data[0x0003] = 0x0FF;
     // end inline assembly
-    uint16_t programLength = 10;
+    uint16_t programLength = 2;
     while(programLength > 0) {
         Cpu.InstructionCycle(Mem, Clock);
         programLength--;
     };
-    std::cout << "Expected value of X register: 0" << std::endl;
-    std::cout << "Expected value of Y register: 43" << std::endl;
-    std::cout << "X register: " << (unsigned)Cpu.Register.IRX << std::endl;
-    std::cout << "Y register: " << (unsigned)Cpu.Register.IRY << std::endl;
+    std::cout << "######" << std::endl;
+    //std::cout << "Expected value of ACC register: " << A-B << std::endl;
+    std::cout << "ACC: " << (unsigned)Cpu.Register.ACC << std::endl;
+    std::cout << "IRX: " << (unsigned)Cpu.Register.IRX << std::endl;
+    std::cout << "IRY: " << (unsigned)Cpu.Register.IRY << std::endl;
+    std::cout << "Mem.Data[0x00FF]: " << (unsigned)Mem.Data[0x00FF] << std::endl;
     std::cout << "Program exited succesfully" << std::endl;
 }
