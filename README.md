@@ -32,10 +32,10 @@ All STACK OPERATIONS are implemented.<br/>
 All LOGICAL operations with an immediate addressing mode are implemented.<br/>
 All ARITHMETIC operations with an immediate addressing mode are implemented.<br/>
 All INC / DEC operations with an implied addressing mode are implemented.<br/>
+All SHIFT operations with an accumulator addressing mode are implemented.<br/>
+All JUMPS operations with an absolute/implied addressing mode are implemented.<br/>
 
 To do: <br/>
-SHIFTS<br/>
-JUMPS<br/>
 BRANCHES<br/>
 STATUS FLAG CHANGES<br/>
 SYSTEM FUNCTIONS<br/>

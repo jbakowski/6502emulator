@@ -566,6 +566,105 @@ void CPU::InstructionCycle(Memory& Memory, Clock& Clock) {
             DEBUG_STDOUT("Status flag N: " << (unsigned)Status.N << std::endl);
             Clock.Tick(DEY_IMPLIED_CYCLE);
             break;
+        case ASL_ACCUMULATOR:
+            DEBUG_STDOUT("---------- " << "ASL_ACCUMULATOR" << " ----------" << std::endl);
+            DEBUG_STDOUT("ACC [before]: " << (unsigned)Register.ACC << std::endl);
+            Status.C = ((Register.ACC >> 7) & 0x1);
+            Register.ACC = (Register.ACC << 1);
+            DEBUG_STDOUT("ACC [after]: " << (unsigned)Register.ACC << std::endl);
+            Status.N = (Register.ACC << 7);
+            if(Register.ACC == 0) {
+                Status.Z = 1;
+            };
+            DEBUG_STDOUT("Status flag C: " << (unsigned)Status.C << std::endl);
+            DEBUG_STDOUT("Status flag Z: " << (unsigned)Status.Z << std::endl);
+            DEBUG_STDOUT("Status flag N: " << (unsigned)Status.N << std::endl);
+            Clock.Tick(ASL_ACCUMULATOR_CYCLE);
+            break;
+        case LSR_ACCUMULATOR:
+        {
+            DEBUG_STDOUT("---------- " << "LSR_ACCUMULATOR" << " ----------" << std::endl);
+            DEBUG_STDOUT("ACC [before]: " << (unsigned)Register.ACC << std::endl);
+            Status.C = ((Register.ACC << 7) & 0x1);
+            Register.ACC = (Register.ACC >> 1);
+            DEBUG_STDOUT("ACC [after]: " << (unsigned)Register.ACC << std::endl);
+            Status.N = (Register.ACC >> 7);
+            if(Register.ACC == 0) {
+                Status.Z = 1;
+            };
+            DEBUG_STDOUT("Status flag C: " << (unsigned)Status.C << std::endl);
+            DEBUG_STDOUT("Status flag Z: " << (unsigned)Status.Z << std::endl);
+            DEBUG_STDOUT("Status flag N: " << (unsigned)Status.N << std::endl);
+            Clock.Tick(LSR_ACCUMULATOR_CYCLE);
+            break;
+        }
+        case ROL_ACCUMULATOR:
+        {
+            DEBUG_STDOUT("---------- " << "ROL_ACCUMULATOR" << " ----------" << std::endl);
+            DEBUG_STDOUT("ACC [before]: " << (unsigned)Register.ACC << std::endl);
+            uint8_t temp = (Register.ACC << 1);
+            temp = temp | (0x1 & Status.C);
+            Status.C = ((Register.ACC >> 7) & 0x1);
+            Register.ACC = temp;
+            DEBUG_STDOUT("ACC [after]: " << (unsigned)Register.ACC << std::endl);
+            Status.N = (Register.ACC >> 7);
+            if(Register.ACC == 0) {
+                Status.Z = 1;
+            };
+            DEBUG_STDOUT("Status flag C: " << (unsigned)Status.C << std::endl);
+            DEBUG_STDOUT("Status flag Z: " << (unsigned)Status.Z << std::endl);
+            DEBUG_STDOUT("Status flag N: " << (unsigned)Status.N << std::endl);
+            Clock.Tick(ROL_ACCUMULATOR_CYCLE);
+            break;
+        }
+        case ROR_ACCUMULATOR:
+        {
+            DEBUG_STDOUT("---------- " << "ROR_ACCUMULATOR" << " ----------" << std::endl);
+            DEBUG_STDOUT("ACC [before]: " << (unsigned)Register.ACC << std::endl);
+            uint8_t temp = (Register.ACC >> 1);
+            temp = temp | (Status.C << 7);
+            Status.C = (Register.ACC & 0x1);
+            Register.ACC = temp;
+            DEBUG_STDOUT("ACC [after]: " << (unsigned)Register.ACC << std::endl);
+            Status.N = (Register.ACC >> 7);
+            if(Register.ACC == 0) {
+                Status.Z = 1;
+            };
+            DEBUG_STDOUT("Status flag C: " << (unsigned)Status.C << std::endl);
+            DEBUG_STDOUT("Status flag Z: " << (unsigned)Status.Z << std::endl);
+            DEBUG_STDOUT("Status flag N: " << (unsigned)Status.N << std::endl);
+            Clock.Tick(ROR_ACCUMULATOR_CYCLE);
+            break;
+        }
+        case JMP_ABSOLUTE:
+        {
+            DEBUG_STDOUT("---------- " << "JMP_ABSOLUTE" << " ----------" << std::endl);
+            uint8_t jmpAddress = Fetch(Memory);
+            DEBUG_STDOUT("PC [before]: " << (unsigned)Register.PC << std::endl);
+            DEBUG_STDOUT("Jump to address: " << (unsigned)jmpAddress << std::endl);
+            Register.PC = jmpAddress;
+            DEBUG_STDOUT("PC [after]: " << (unsigned)Register.PC << std::endl);
+            Clock.Tick(JMP_ABSOLUTE_CYCLE);
+            break;
+        }
+        case JSR_ABSOLUTE:
+        {
+            DEBUG_STDOUT("---------- " << "JSR_ABSOLUTE" << " ----------" << std::endl);
+            uint8_t jmpAddress = Fetch(Memory);
+            DEBUG_STDOUT("PC [before]: " << (unsigned)Register.PC << std::endl);
+            DEBUG_STDOUT("Jump to address: " << (unsigned)jmpAddress << std::endl);
+            PushToStack(Memory, Register.PC);
+            Register.PC = jmpAddress;
+            DEBUG_STDOUT("PC [after]: " << (unsigned)Register.PC << std::endl);
+            Clock.Tick(JSR_ABSOLUTE_CYCLE);
+            break;
+        }
+        case RTS_IMPLIED:
+            DEBUG_STDOUT("---------- " << "RTS_IMPLIED" << " ----------" << std::endl);
+            DEBUG_STDOUT("PC [before]: " << (unsigned)Register.PC << std::endl);
+            Register.PC = PopFromStack(Memory);
+            DEBUG_STDOUT("PC [after]: " << (unsigned)Register.PC << std::endl);
+            Clock.Tick(RTS_IMPLIED);
         default:
             break;
     }

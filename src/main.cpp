@@ -8,17 +8,24 @@ int main() {
     Clock Clock;
     Mem.Init();
     Cpu.Reset(Mem);
-    uint8_t A = 0b11001111;
-    uint8_t B = 0b10001001;
+    uint8_t A = 0x30;
+    uint8_t B = 0x40;
     std::cout << "Starting operations." << std::hex << std::endl; // just an excuse to turn on hex formatting
     // inline assembly
-    Mem.Data[0x00FF] = B;
     Mem.Data[0x0000] = LDA_IMMEDIATE;
     Mem.Data[0x0001] = A;
-    Mem.Data[0x0002] = BIT_TEST_ZEROPAGE;
-    Mem.Data[0x0003] = 0x0FF;
+    Mem.Data[0x0002] = JSR_ABSOLUTE;
+    Mem.Data[0x0003] = 0x0040; // jmp to subroutine A
+    Mem.Data[0x0004] = LDA_IMMEDIATE;
+    Mem.Data[0x0005] = 0x50;
+    // subroutine A
+    Mem.Data[0x0040] = LDA_IMMEDIATE;
+    Mem.Data[0x0041] = B;
+    Mem.Data[0x0042] = LDX_ABSOLUTE;
+    Mem.Data[0x0043] = 0x50;
+    Mem.Data[0x0044] = RTS_IMPLIED;
     // end inline assembly
-    uint16_t programLength = 2;
+    uint16_t programLength = 10;
     while(programLength > 0) {
         Cpu.InstructionCycle(Mem, Clock);
         programLength--;

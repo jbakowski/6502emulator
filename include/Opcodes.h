@@ -177,17 +177,17 @@
 
 // AND - Logcial AND
 
-#define AND_IMMEDIATE           0x29
+#define AND_IMMEDIATE           0x29 // implemented
 #define AND_IMMEDIATE_CYCLE     2
 
 // EOR - Exclusive OR
 
-#define EOR_IMMEDIATE           0x49
+#define EOR_IMMEDIATE           0x49 // implemented
 #define EOR_IMMEDIATE_CYCLE     2
 
 // ORA - Logical Inclusive OR
 
-#define ORA_IMMEDIATE           0x09
+#define ORA_IMMEDIATE           0x09 // implemented
 #define ORA_IMMEDIATE_CYCLE     2
 
 // BIT_TEST - Bit Test
@@ -201,26 +201,26 @@
 
 // ADC - Add with Carry
 
-#define ADC_IMMEDIATE           0x69
+#define ADC_IMMEDIATE           0x69 // implemented
 #define ADC_IMMEDIATE_CYCLE     2
 
 // SBC - Subtract with Carry
-#define SBC_IMMEDIATE           0xE9
+#define SBC_IMMEDIATE           0xE9 // implemented
 #define SBC_IMMEDIATE_CYCLE     2
 
 // CMP - Compare
 
-#define CMP_IMMEDIATE           0xC9
+#define CMP_IMMEDIATE           0xC9 // implemented
 #define CMP_IMMEDIATE_CYCLE     3
 
 // CPX - Compare X Register
 
-#define CPX_IMMEDIATE           0xE0
+#define CPX_IMMEDIATE           0xE0 // implemented
 #define CPX_IMMEDIATE_CYCLE     2
 
 // CPY - Compare Y Register
 
-#define CPY_IMMEDIATE           0xC0
+#define CPY_IMMEDIATE           0xC0 // implemented
 #define CPY_IMMEDIATE_CYCLE     2
 
 // ###############################
@@ -229,41 +229,76 @@
 
 // INC - Increment Memory
 
-#define INC_ZEROPAGE            0xE6
+#define INC_ZEROPAGE            0xE6 // implemented
 #define INC_ZEROPAGE_CYCLE      5
 
 // INX - Increment X Register
 
-#define INX_IMPLIED             0xE8
+#define INX_IMPLIED             0xE8 // implemented
 #define INX_IMPLIED_CYCLE       2
 
 // INY - Increment Y Register
 
-#define INY_IMPLIED             0xC8
+#define INY_IMPLIED             0xC8 // implemented
 #define INY_IMPLIED_CYCLE       2
 
 // DEC - Decrement Memory
 
-#define DEC_ZEROPAGE            0xC6
+#define DEC_ZEROPAGE            0xC6 // implemented
 #define DEC_ZEROPAGE_CYCLE      5
 
 // DEX - Decrement X Register
 
-#define DEX_IMPLIED             0xCA
+#define DEX_IMPLIED             0xCA // implemented
 #define DEX_IMPLIED_CYCLE       2
 
 // DEY - Decrement Y Register
 
-#define DEY_IMPLIED             0x88
+#define DEY_IMPLIED             0x88 // implemented
 #define DEY_IMPLIED_CYCLE       2
 
 // ###############################
 // ###         SHIFTS          ###
 // ###############################
 
+// ASL - Arithmetic Shift Left
+
+#define ASL_ACCUMULATOR         0x0A
+#define ASL_ACCUMULATOR_CYCLE   2
+
+// LSR - Logical Shift Right
+
+#define LSR_ACCUMULATOR         0x4A
+#define LSR_ACCUMULATOR_CYCLE   2
+
+// ROL - Rotate Left
+
+#define ROL_ACCUMULATOR         0x2A
+#define ROL_ACCUMULATOR_CYCLE   2
+
+// ROR - Rotate Right
+
+#define ROR_ACCUMULATOR         0x6A
+#define ROR_ACCUMULATOR_CYCLE   2
+
 // ###############################
 // ###          JUMPS          ###
 // ###############################
+
+// JMP - Jump
+
+#define JMP_ABSOLUTE            0x4C // implemented
+#define JMP_ABSOLUTE_CYCLE      3
+
+// JSR - Jump to Subroutine
+
+#define JSR_ABSOLUTE            0x20 // implemented
+#define JSR_ABSOLUTE_CYCLE      6
+
+// RTS - Return from Subroutine
+
+#define RTS_IMPLIED             0x60 // implemented
+#define RTS_IMPLIED_CYCLE       6
 
 // ###############################
 // ###        BRANCHES         ###
