@@ -164,21 +164,36 @@ void CPU::InstructionCycle(Memory& Memory, Clock& Clock) {
             DEBUG_STDOUT("Status flag N: " << (unsigned)Status.N << std::endl);
             Clock.Tick(LDY_IMMEDIATE_CYCLE);
             break;
-        case STA_ZERO_PAGE:
+        case STA_ZEROPAGE:
+        {
             DEBUG_STDOUT("---------- " << "STA_ZERO_PAGE" << " ----------" << std::endl);
-            Store(Memory, Register.ACC);
-            Clock.Tick(STA_ZERO_PAGE_CYCLE);
+            DEBUG_STDOUT("ACC: " << (unsigned)Register.ACC << std::endl);
+            uint8_t dataAddress = Fetch(Memory);
+            DEBUG_STDOUT("Data address: " << (unsigned)dataAddress << std::endl);
+            WriteByte(Memory, dataAddress, Register.ACC);
+            Clock.Tick(STA_ZEROPAGE_CYCLE);
             break;
-        case STX_ZERO_PAGE:
+        }
+        case STX_ZEROPAGE:
+        {
             DEBUG_STDOUT("---------- " << "STX_ZERO_PAGE" << " ----------" << std::endl);
-            Store(Memory, Register.IRX);
-            Clock.Tick(STX_ZERO_PAGE_CYCLE);
+            DEBUG_STDOUT("IRX: " << (unsigned)Register.IRX << std::endl);
+            uint8_t dataAddress = Fetch(Memory);
+            DEBUG_STDOUT("Data address: " << (unsigned)dataAddress << std::endl);
+            WriteByte(Memory, dataAddress, Register.IRX);
+            Clock.Tick(STX_ZEROPAGE_CYCLE);
             break;
-        case STY_ZERO_PAGE:
+        }
+        case STY_ZEROPAGE:
+        {
             DEBUG_STDOUT("---------- " << "STY_ZERO_PAGE" << " ----------" << std::endl);
-            Store(Memory, Register.IRY);
-            Clock.Tick(STY_ZERO_PAGE_CYCLE);
+            DEBUG_STDOUT("IRY: " << (unsigned)Register.IRY << std::endl);
+            uint8_t dataAddress = Fetch(Memory);
+            DEBUG_STDOUT("Data address: " << (unsigned)dataAddress << std::endl);
+            WriteByte(Memory, dataAddress, Register.IRY);
+            Clock.Tick(STY_ZEROPAGE_CYCLE);
             break;
+        }
         case TAX_IMPLIED:
             DEBUG_STDOUT("---------- " << "TAX_IMPLIED" << " ----------" << std::endl);
             DEBUG_STDOUT("Register.IRX (before): " << (unsigned)Register.IRX << std::endl);
@@ -401,6 +416,50 @@ void CPU::InstructionCycle(Memory& Memory, Clock& Clock) {
             Clock.Tick(ADC_IMMEDIATE_CYCLE);
             break;
         }
+        case ADC_ZEROPAGE:
+        {
+            DEBUG_STDOUT("---------- " << "ADC_ZEROPAGE" << " ----------" << std::endl);
+            DEBUG_STDOUT("Accumulator status [before]: " << (unsigned)Register.ACC << std::endl);
+            DEBUG_STDOUT("Carry flag: " << (unsigned)Status.C << std::endl);
+            uint8_t dataAddress = Fetch(Memory);
+            DEBUG_STDOUT("Data address: " << (unsigned)dataAddress << std::endl);
+            uint8_t data = ReadByte(Memory, dataAddress);
+            DEBUG_STDOUT("Data: " << (unsigned)data << std::endl);
+            uint8_t differentSign = 0;
+            uint8_t operandXor = 0;
+
+            // if bit 7 of operandXor is 1 - the signs of ACC and data are different
+            operandXor = Register.ACC ^ data;
+            if ((operandXor >> 7) & Status.N) {
+                differentSign = 1;
+            }
+            DEBUG_STDOUT("Different sign of the values: " << (unsigned)differentSign<< std::endl);
+            
+            uint16_t sum = Register.ACC;
+
+            sum = sum + data;
+            sum = sum + Status.C;
+
+            Register.ACC = sum & 0xFF;
+            if(sum > 0xFF) {
+                Status.C = 1;
+            }
+            SetZeroFlag(Status, Register.ACC);
+            SetNegativeFlag(Status, Register.ACC);
+
+            operandXor = Register.ACC ^ data;
+            // oldDifferentSign != newDifferentSign -> overflow
+            if(differentSign != ((operandXor >> 7) & Status.N)) {
+                Status.O = 1;
+            }
+            DEBUG_STDOUT("Accumulator status [after]: " << (unsigned)Register.ACC << std::endl);
+            DEBUG_STDOUT("Status flag C: " << (unsigned)Status.C << std::endl);
+            DEBUG_STDOUT("Status flag Z: " << (unsigned)Status.Z << std::endl);
+            DEBUG_STDOUT("Status flag O: " << (unsigned)Status.O << std::endl);
+            DEBUG_STDOUT("Status flag N: " << (unsigned)Status.N << std::endl);
+            Clock.Tick(ADC_ZEROPAGE);
+            break;
+        }
         case SBC_IMMEDIATE:
         {
             DEBUG_STDOUT("---------- " << "SBC_IMMEDIATE" << " ----------" << std::endl);
@@ -576,7 +635,7 @@ void CPU::InstructionCycle(Memory& Memory, Clock& Clock) {
             DEBUG_STDOUT("---------- " << "DEY_ZEROPAGE" << " ----------" << std::endl);
             DEBUG_STDOUT("IRY [before]: " << (unsigned)Register.IRY << std::endl);
             Register.IRY = Register.IRY - 1;
-            DEBUG_STDOUT("IRY [before]: " << (unsigned)Register.IRY << std::endl);
+            DEBUG_STDOUT("IRY [after]: " << (unsigned)Register.IRY << std::endl);
             SetNegativeFlag(Status, Register.IRY);
             SetZeroFlag(Status, Register.IRY);
             DEBUG_STDOUT("Status flag Z: " << (unsigned)Status.Z << std::endl);
@@ -682,6 +741,177 @@ void CPU::InstructionCycle(Memory& Memory, Clock& Clock) {
             Register.PC = PopFromStack(Memory);
             DEBUG_STDOUT("PC [after]: " << (unsigned)Register.PC << std::endl);
             Clock.Tick(RTS_IMPLIED);
+            break;
+        case BCC_RELATIVE:
+        {
+            DEBUG_STDOUT("---------- " << "BCC_RELATIVE" << " ----------" << std::endl);
+            if(Status.C == 0) {
+            uint8_t displacement = Fetch(Memory);
+            DEBUG_STDOUT("PC [before]: " << (unsigned)Register.PC << std::endl);
+            DEBUG_STDOUT("Displacement: " << (unsigned)displacement << std::endl);
+            Register.PC = Register.PC + displacement;
+            DEBUG_STDOUT("PC [after]: " << (unsigned)Register.PC << std::endl);
+            } else {
+            Register.PC = Register.PC++;
+            DEBUG_STDOUT("PC [no displacement]: " << (unsigned)Register.PC << std::endl);
+            };
+            Clock.Tick(BCC_RELATIVE_CYCLE);
+            break;
+        }
+        case BCS_RELATIVE:
+        {
+            DEBUG_STDOUT("---------- " << "BCS_RELATIVE" << " ----------" << std::endl);
+            if(Status.C == 1) {
+            uint8_t displacement = Fetch(Memory);
+            DEBUG_STDOUT("PC [before]: " << (unsigned)Register.PC << std::endl);
+            DEBUG_STDOUT("Displacement: " << (unsigned)displacement << std::endl);
+            Register.PC = Register.PC + displacement;
+            DEBUG_STDOUT("PC [after]: " << (unsigned)Register.PC << std::endl);
+            } else {
+            Register.PC = Register.PC++;
+            DEBUG_STDOUT("PC [no displacement]: " << (unsigned)Register.PC << std::endl);
+            };
+            Clock.Tick(BCS_RELATIVE_CYCLE);
+            break;
+        }
+        case BEQ_RELATIVE:
+        {
+            DEBUG_STDOUT("---------- " << "BEQ_RELATIVE" << " ----------" << std::endl);
+            if(Status.Z == 1) {
+            uint8_t displacement = Fetch(Memory);
+            DEBUG_STDOUT("PC [before]: " << (unsigned)Register.PC << std::endl);
+            DEBUG_STDOUT("Displacement: " << (unsigned)displacement << std::endl);
+            Register.PC = Register.PC + displacement;
+            DEBUG_STDOUT("PC [after]: " << (unsigned)Register.PC << std::endl);
+            } else {
+            Register.PC = Register.PC++;
+            DEBUG_STDOUT("PC [no displacement]: " << (unsigned)Register.PC << std::endl);
+            };
+            Clock.Tick(BEQ_RELATIVE_CYCLE);
+            break;
+        }
+        case BMI_RELATIVE:
+        {
+            DEBUG_STDOUT("---------- " << "BMI_RELATIVE" << " ----------" << std::endl);
+            if(Status.N == 1) {
+            uint8_t displacement = Fetch(Memory);
+            DEBUG_STDOUT("PC [before]: " << (unsigned)Register.PC << std::endl);
+            DEBUG_STDOUT("Displacement: " << (unsigned)displacement << std::endl);
+            Register.PC = Register.PC + displacement;
+            DEBUG_STDOUT("PC [after]: " << (unsigned)Register.PC << std::endl);
+            } else {
+            Register.PC = Register.PC++;
+            DEBUG_STDOUT("PC [no displacement]: " << (unsigned)Register.PC << std::endl);
+            };
+            Clock.Tick(BMI_RELATIVE_CYCLE);
+            break;
+        }
+        case BNE_RELATIVE:
+        {
+            DEBUG_STDOUT("---------- " << "BNE_RELATIVE" << " ----------" << std::endl);
+            if(Status.Z == 0) {
+            int8_t displacement = Fetch(Memory);
+            DEBUG_STDOUT("PC [before]: " << (unsigned)Register.PC << std::endl);
+            DEBUG_STDOUT("Displacement: " << (unsigned)displacement << std::endl);
+            Register.PC = Register.PC + displacement;
+            DEBUG_STDOUT("PC [after]: " << (unsigned)Register.PC << std::endl);
+            } else {
+            Register.PC = Register.PC++;
+            DEBUG_STDOUT("PC [no displacement]: " << (unsigned)Register.PC << std::endl);
+            };
+            Clock.Tick(BNE_RELATIVE_CYCLE);
+            break;
+        }
+        case BPL_RELATIVE:
+        {
+            DEBUG_STDOUT("---------- " << "BPL_RELATIVE" << " ----------" << std::endl);
+            if(Status.N == 0) {
+            uint8_t displacement = Fetch(Memory);
+            DEBUG_STDOUT("PC [before]: " << (unsigned)Register.PC << std::endl);
+            DEBUG_STDOUT("Displacement: " << (unsigned)displacement << std::endl);
+            Register.PC = Register.PC + displacement;
+            DEBUG_STDOUT("PC [after]: " << (unsigned)Register.PC << std::endl);
+            } else {
+            Register.PC = Register.PC++;
+            DEBUG_STDOUT("PC [no displacement]: " << (unsigned)Register.PC << std::endl);
+            };
+            Clock.Tick(BPL_RELATIVE_CYCLE);
+            break;
+        }
+        case BVC_RELATIVE:
+        {
+            DEBUG_STDOUT("---------- " << "BVC_RELATIVE" << " ----------" << std::endl);
+            if(Status.O == 0) {
+            uint8_t displacement = Fetch(Memory);
+            DEBUG_STDOUT("PC [before]: " << (unsigned)Register.PC << std::endl);
+            DEBUG_STDOUT("Displacement: " << (unsigned)displacement << std::endl);
+            Register.PC = Register.PC + displacement;
+            DEBUG_STDOUT("PC [after]: " << (unsigned)Register.PC << std::endl);
+            } else {
+            Register.PC = Register.PC++;
+            DEBUG_STDOUT("PC [no displacement]: " << (unsigned)Register.PC << std::endl);
+            };
+            Clock.Tick(BVC_RELATIVE_CYCLE);
+            break;
+        }
+        case BVS_RELATIVE:
+        {
+            DEBUG_STDOUT("---------- " << "BVS_RELATIVE" << " ----------" << std::endl);
+            if(Status.O == 1) {
+            uint8_t displacement = Fetch(Memory);
+            DEBUG_STDOUT("PC [before]: " << (unsigned)Register.PC << std::endl);
+            DEBUG_STDOUT("Displacement: " << (unsigned)displacement << std::endl);
+            Register.PC = Register.PC + displacement;
+            DEBUG_STDOUT("PC [after]: " << (unsigned)Register.PC << std::endl);
+            } else {
+            Register.PC = Register.PC++;
+            DEBUG_STDOUT("PC [no displacement]: " << (unsigned)Register.PC << std::endl);
+            };
+            Clock.Tick(BVS_RELATIVE_CYCLE);
+            break;
+        }
+        case CLC_IMPLIED:
+            DEBUG_STDOUT("---------- " << "CLC_IMPLIED" << " ----------" << std::endl);
+            Status.C = 0;
+            DEBUG_STDOUT("Status flag C: " << (unsigned)Status.C << std::endl);
+            Clock.Tick(CLC_IMPLIED_CYCLE);
+            break;
+        case CLD_IMPLIED:
+            DEBUG_STDOUT("---------- " << "CLD_IMPLIED" << " ----------" << std::endl);
+            Status.D = 0;
+            DEBUG_STDOUT("Status flag D: " << (unsigned)Status.D << std::endl);
+            Clock.Tick(CLD_IMPLIED_CYCLE);
+            break;
+        case CLI_IMPLIED:
+            DEBUG_STDOUT("---------- " << "CLI_IMPLIED" << " ----------" << std::endl);
+            Status.I = 0;
+            DEBUG_STDOUT("Status flag I: " << (unsigned)Status.I << std::endl);
+            Clock.Tick(CLI_IMPLIED_CYCLE);
+            break;
+        case CLV_IMPLIED:
+            DEBUG_STDOUT("---------- " << "CLV_IMPLIED" << " ----------" << std::endl);
+            Status.O = 0;
+            DEBUG_STDOUT("Status flag O: " << (unsigned)Status.O << std::endl);
+            Clock.Tick(CLV_IMPLIED_CYCLE);
+            break;
+        case SEC_IMPLIED:
+            DEBUG_STDOUT("---------- " << "SEC_IMPLIED" << " ----------" << std::endl);
+            Status.C = 1;
+            DEBUG_STDOUT("Status flag C: " << (unsigned)Status.O << std::endl);
+            Clock.Tick(SEC_IMPLIED_CYCLE);
+            break;
+        case SED_IMPLIED:
+            DEBUG_STDOUT("---------- " << "SED_IMPLIED" << " ----------" << std::endl);
+            Status.D = 1;
+            DEBUG_STDOUT("Status flag D: " << (unsigned)Status.D << std::endl);
+            Clock.Tick(SED_IMPLIED_CYCLE);
+            break;
+        case SEI_IMPLIED:
+            DEBUG_STDOUT("---------- " << "SEI_IMPLIED" << " ----------" << std::endl);
+            Status.I = 1;
+            DEBUG_STDOUT("Status flag I: " << (unsigned)Status.I << std::endl);
+            Clock.Tick(SEI_IMPLIED_CYCLE);
+            break;
         default:
             break;
     }

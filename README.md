@@ -34,13 +34,14 @@ All ARITHMETIC operations with an immediate addressing mode are implemented.<br/
 All INC / DEC operations with an implied addressing mode are implemented.<br/>
 All SHIFT operations with an accumulator addressing mode are implemented.<br/>
 All JUMPS operations with an absolute/implied addressing mode are implemented.<br/>
-
-To do: <br/>
-BRANCHES<br/>
-STATUS FLAG CHANGES<br/>
-SYSTEM FUNCTIONS<br/>
+All BRANCHES operations are implemented.<br/>
+All STATUS FLAG CHANGES operations are implemented.<br/>
 
 ## Miscellaneous<br/>
+
+### Default program
+
+By default the processor runs a program calculating N-th Fibonacci number and storing the result in ACC. To calculate N-th Fibonacci number of your choosing - change the ```desiredNumber``` variable to a value between 1 and 7.
 
 ### Asserts<br/>
 

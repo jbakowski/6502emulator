@@ -70,11 +70,11 @@
 
 // STA - Store Accumulator
 
-#define STA_ZERO_PAGE           0x85    // implemented
-#define STA_ZERO_PAGE_CYCLE     3
+#define STA_ZEROPAGE            0x85    // implemented
+#define STA_ZEROPAGE_CYCLE      3
 
-#define STA_ZERO_PAGE_X         0x95
-#define STA_ZERO_PAGE_X_CYCLE   4
+#define STA_ZEROPAGE_X          0x95
+#define STA_ZEROPAGE_X_CYCLE    4
 
 #define STA_ABSOLUTE            0x8D
 #define STA_ABSOLUTE_CYCLE      4
@@ -93,22 +93,22 @@
 
 // STX - Store X Register
 
-#define STX_ZERO_PAGE           0x86    // implemented
-#define STX_ZERO_PAGE_CYCLE     3
+#define STX_ZEROPAGE            0x86    // implemented
+#define STX_ZEROPAGE_CYCLE      3
 
-#define STX_ZERO_PAGE_Y         0x96
-#define STX_ZERO_PAGE_Y_CYCLE   4
+#define STX_ZEROPAGE_Y          0x96
+#define STX_ZEROPAGE_Y_CYCLE    4
 
 #define STX_ABSOLUTE            0x8E
 #define STX_ABSOLUTE_CYCLE      4
 
 // STY - Store Y Register
 
-#define STY_ZERO_PAGE           0x84    // implemented
-#define STY_ZERO_PAGE_CYCLE     3
+#define STY_ZEROPAGE            0x84    // implemented
+#define STY_ZEROPAGE_CYCLE      3
 
-#define STY_ZERO_PAGE_X         0x94
-#define STY_ZERO_PAGE_X_CYCLE   4
+#define STY_ZEROPAGE_X          0x94
+#define STY_ZEROPAGE_X_CYCLE    4
 
 #define STY_ABSOLUTE            0x8C
 #define STY_ABSOLUTE_CYCLE      4
@@ -203,6 +203,9 @@
 
 #define ADC_IMMEDIATE           0x69 // implemented
 #define ADC_IMMEDIATE_CYCLE     2
+
+#define ADC_ZEROPAGE            0x65 // implemented
+#define ADC_ZEROPAGE_CYCLE      3
 
 // SBC - Subtract with Carry
 #define SBC_IMMEDIATE           0xE9 // implemented
@@ -304,9 +307,84 @@
 // ###        BRANCHES         ###
 // ###############################
 
+// BCC - Branch if Carry Clear
+
+#define BCC_RELATIVE            0x90 // implemented
+#define BCC_RELATIVE_CYCLE      2
+
+// BCS - Branch if Carry Set
+
+#define BCS_RELATIVE            0xB0 // implemented
+#define BCS_RELATIVE_CYCLE      2
+
+// BEQ - Branch if Equal
+
+#define BEQ_RELATIVE            0xF0 // implemented
+#define BEQ_RELATIVE_CYCLE      2
+
+// BMI - Branch if Minus
+
+#define BMI_RELATIVE            0x30 // implemented
+#define BMI_RELATIVE_CYCLE      2
+
+// BNE - Branch if Not Equal
+
+#define BNE_RELATIVE            0xD0 // implemented
+#define BNE_RELATIVE_CYCLE      2
+
+// BPL - Branch if Positive
+
+#define BPL_RELATIVE            0x10 // implemented
+#define BPL_RELATIVE_CYCLE      2
+
+// BVC - Branch if Overflow Clear
+
+#define BVC_RELATIVE            0x50 // implemented
+#define BVC_RELATIVE_CYCLE      2
+
+// BVS - Branch if Overflow Set
+
+#define BVS_RELATIVE            0x70 // implemented
+#define BVS_RELATIVE_CYCLE      2
+
 // ###############################
 // ###   STATUS FLAG CHANGES   ###
 // ###############################
+
+// CLC - Clear Carry Flag
+
+#define CLC_IMPLIED             0x18
+#define CLC_IMPLIED_CYCLE       2
+
+// CLD - Clear Decimal Mode
+
+#define CLD_IMPLIED             0xD8
+#define CLD_IMPLIED_CYCLE       2
+
+// CLI - Clear Interrupt Mode
+
+#define CLI_IMPLIED             0x58
+#define CLI_IMPLIED_CYCLE       2
+
+// CLV - Clear Overflow Flag
+
+#define CLV_IMPLIED             0xB8
+#define CLV_IMPLIED_CYCLE       2
+
+// SEC - Set Carry Flag
+
+#define SEC_IMPLIED             0x38
+#define SEC_IMPLIED_CYCLE       2
+
+// SED - Set Decimal Flag
+
+#define SED_IMPLIED             0xF8
+#define SED_IMPLIED_CYCLE       2
+
+// SEI - Set Interrupt Disable
+
+#define SEI_IMPLIED             0x78
+#define SEI_IMPLIED_CYCLE       2
 
 // ###############################
 // ###     SYSTEM FUNCTIONS    ###
