@@ -31,10 +31,5 @@ int main() {
         programLength--;
     };
     std::cout << "######" << std::endl;
-    //std::cout << "Expected value of ACC register: " << A-B << std::endl;
-    std::cout << "ACC: " << (unsigned)Cpu.Register.ACC << std::endl;
-    std::cout << "IRX: " << (unsigned)Cpu.Register.IRX << std::endl;
-    std::cout << "IRY: " << (unsigned)Cpu.Register.IRY << std::endl;
-    std::cout << "Mem.Data[0x00FF]: " << (unsigned)Mem.Data[0x00FF] << std::endl;
-    std::cout << "Program exited succesfully" << std::endl;
+    Cpu.PrintCpuStatus();
 }

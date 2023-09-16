@@ -77,4 +77,7 @@ class CPU {
         void        SetNegativeFlag(StatusFlag& StatusFlag, uint16_t Register);
         void        InstructionCycle(Memory& Memory, Clock& Clock);
 
+        // logging
+        void        PrintCpuStatus();
+
 };

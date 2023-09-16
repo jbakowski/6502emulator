@@ -110,6 +110,23 @@ void CPU::SetNegativeFlag(StatusFlag& StatusFlag, uint16_t Register) {
     }
 }
 
+void CPU::PrintCpuStatus() {
+    std::cout << "### Registers" << std::endl;
+    std::cout << "# ACC: " << (unsigned)Register.ACC << std::endl;
+    std::cout << "# IRX: " << (unsigned)Register.IRX << std::endl;
+    std::cout << "# IRY: " << (unsigned)Register.IRY << std::endl;
+    std::cout << "# PC:  " << (unsigned)Register.PC  << std::endl;
+    std::cout << "# SP:  " << (unsigned)Register.SP  << std::endl;
+    std::cout << "### Status flags" << std::endl;
+    std::cout << "# Carry:             " << (unsigned)Status.C << std::endl;
+    std::cout << "# Zero:              " << (unsigned)Status.Z << std::endl;
+    std::cout << "# Interrupt disable: " << (unsigned)Status.I << std::endl;
+    std::cout << "# Decimal mode:      " << (unsigned)Status.D << std::endl;
+    std::cout << "# Break:             " << (unsigned)Status.B << std::endl;
+    std::cout << "# Overflow:          " << (unsigned)Status.O << std::endl;
+    std::cout << "# Negative:          " << (unsigned)Status.N << std::endl;
+ }
+
 void CPU::InstructionCycle(Memory& Memory, Clock& Clock) {
     uint8_t opcode = Fetch(Memory); // fetch stage
     switch(opcode) {                // decode stage
